@@ -1,0 +1,72 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name:  {{ .Release.Name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- template "labels" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+    {{- include "labels" . | indent 2 }}
+  template:
+    metadata:
+      labels:
+      {{- include "labels" . | indent 2 }}
+    spec:
+      serviceAccountName: {{ .Release.Name }} 
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.repository }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+          - containerPort: 443
+          - containerPort: 81
+          resources:
+            limits:
+              memory: 3000Mi
+              cpu: 4000m
+            requests:
+              memory: 3000Mi
+              cpu: 4000m 
+          livenessProbe:
+            exec:
+              command : ["nc", "-vz", "0.0.0.0", "443"]
+            initialDelaySeconds: 20
+            timeoutSeconds: 630
+            periodSeconds: 60
+            successThreshold: 1
+            failureThreshold: 5
+          readinessProbe:
+            exec:
+              command : ["nc", "-vz", "0.0.0.0", "443"]
+            initialDelaySeconds: 20
+            timeoutSeconds: 630
+            periodSeconds: 60
+            successThreshold: 1
+            failureThreshold: 5
+      imagePullSecrets:
+      - name: apilite   
+      tolerations:
+      - key: virtual-kubelet.io/provider
+        operator: Exists
+      - effect: NoSchedule
+        key: azure.com/aci
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: type
+                operator: NotIn
+                values:
+                - virtual-kubelet
+      nodeSelector:
+        type: virtual-kubelet
