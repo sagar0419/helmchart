@@ -5,7 +5,7 @@
 namespace: api-lite
 replicaCount: 2
 image:
-  repository: social27acr.azurecr.io/eventmicrost
+  repository: sagaracr.azurecr.io/eventmicrost
   pullPolicy: Always
   tag: ""
 
@@ -52,11 +52,11 @@ ingress:
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
     nginx.ingress.kubernetes.io/cors-allow-headers: DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,workspace_token,languagecode,event_token,access_token,events_token,Authorization,event-id
     nginx.ingress.kubernetes.io/cors-allow-methods: PUT, GET, POST, OPTIONS
-    nginx.ingress.kubernetes.io/cors-allow-origin: https://apptest.social27.com, https://meet-lite.social27.com, http://localhost:10001, http://localhost:4200, http://localhost:50409, https://trackscreator.social27.com, http://localhost:50000,  https://buildtest.social27.com
+    nginx.ingress.kubernetes.io/cors-allow-origin: https://apptest.sagar.com, https://meet-lite.sagar.com, http://localhost:10001, http://localhost:4200, http://localhost:50409, https://trackscreator.sagar.com, http://localhost:50000,  https://buildtest.sagar.com
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/use-regex: "true"
   hosts:
-    - host: api-lite-event.social27.com
+    - host: api-lite-event.sagar.com
       paths: []
   service:
     name: evnt-svc-evnt
@@ -65,7 +65,7 @@ ingress:
   tls: 
     - secretName: ssl-api-lite
       hosts:
-        - api-lite-event.social27.com
+        - api-lite-event.sagar.com
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
